@@ -1,0 +1,26 @@
+version: '2'
+services:
+  telegraf:
+    image: telegraf
+    volumes:
+      - "./telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+    depends_on:
+      - influx
+
+  influx:
+    image: influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+    volumes:
+      - "./influxdbdata:/var/lib/influxdb"
+
+  kapacitor:
+    image: kapacitor
+    ports:
+      - "9092:9092"
+    volumes:
+      - "./kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro"
+      - "./cpu_alert.tick:/cpu_alert.tick:ro"
+    depends_on:
+      - influx
